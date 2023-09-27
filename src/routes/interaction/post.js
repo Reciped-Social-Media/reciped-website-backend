@@ -5,11 +5,12 @@ import { Post, PostLike, PostReview } from "../../database/index.js";
 const router = express.Router();
 
 router.post("/", authenticateToken, async (req, res) => {
-	const { userId, recipeId, caption } = req.body;
+	const { userId, recipeId, caption, category } = req.body;
 
 	if (
 		!recipeId || typeof recipeId !== "number" ||
-		!caption || typeof caption !== "string"
+		!caption || typeof caption !== "string" ||
+		!category || typeof category !== "string"
 	) {
 		res.status(400).send({ error: "Invalid format" });
 		return;
@@ -56,6 +57,7 @@ router.get("/", async (req, res) => {
 		userId: post.userId,
 		recipeId: post.recipeId,
 		caption: post.caption,
+		category: post.category,
 		likes: post.postLikes.length,
 		reviews: post.postReviews.length,
 		rating: post.postReviews.length > 0 ? post.postReviews.reduce((acc, cur) => acc + cur.rating, 0) / post.postReviews.length : 0,
