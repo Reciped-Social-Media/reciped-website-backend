@@ -26,6 +26,10 @@ const Post = sequelize.define(
 			type: DataTypes.STRING(1024),
 			allowNull: false,
 		},
+		category: {
+			type: DataTypes.ENUM(["Breakfast", "Lunch", "Dinner", "All"]),
+			allowNull: false,
+		},
 	},
 	{
 		tableName: "Posts",

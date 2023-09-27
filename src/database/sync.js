@@ -30,4 +30,4 @@ async function sync() {
 	await UserShopList.sync();
 }
 
-sync();
+sync({ alter: true });
