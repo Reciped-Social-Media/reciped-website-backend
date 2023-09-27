@@ -3,7 +3,6 @@ import fs from "fs";
 import dotenv from "dotenv";
 
 dotenv.config();
-
 const caCertificate = fs.readFileSync("./dbcert.pem").toString();
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
@@ -16,5 +15,17 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, pr
 		},
 	},
 });
+
+const testDbConnection = async () => {
+	try {
+		await sequelize.authenticate();
+		console.log("Connected to db!");
+	}
+	catch (error) {
+		console.error("Unable to connect", error);
+	}
+};
+
+testDbConnection();
 
 export default sequelize;
