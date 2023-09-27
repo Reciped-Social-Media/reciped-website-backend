@@ -60,12 +60,12 @@ router.get("/", async (req, res) => {
 	const { queryString, recipeId } = req.query;
 
 	if (!queryString || typeof queryString !== "string") {
-		res.status(400).send({ error: "Invalid format" });
+		res.send({ error: "Invalid format" });
 		return;
 	}
 
 	if (recipeId && typeof recipeId !== "number") {
-		res.status(400).send({ error: "Invalid format" });
+		res.send({ error: "Invalid format" });
 		return;
 	}
 

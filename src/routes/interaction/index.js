@@ -21,12 +21,13 @@ router.get("/", authenticateToken, async (req, res) => {
 			};
 		}
 	});
-	const comments = postReviews.map(r => {
-		if (r.dataValues.comment !== null) {
-			return {
+	const comments = [];
+	postReviews.map(r => {
+		if (typeof r.dataValues.comment === "string") {
+			comments.push({
 				username: r.dataValues.User.dataValues.username,
 				comment: r.dataValues.comment,
-			};
+			});
 		}
 	});
 	res.send({ likes, ratings, comments });
