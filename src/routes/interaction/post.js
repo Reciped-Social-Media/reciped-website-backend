@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.post("/", authenticateToken, async (req, res) => {
 	const { userId, recipeId, caption, category } = req.body;
-	console.log(userId, recipeId, caption, category);
 
 	if (
 		!recipeId || typeof recipeId !== "number" ||
@@ -27,7 +26,6 @@ router.post("/", authenticateToken, async (req, res) => {
 			res.status(500).send({ error: "Something went wrong!" });
 		});
 	if (!post) return;
-	console.log(post);
 	res.status(200).send({ postId: post.dataValues.id });
 });
 
