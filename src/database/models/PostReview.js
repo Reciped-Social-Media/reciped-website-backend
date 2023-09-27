@@ -29,7 +29,7 @@ const PostReview = sequelize.define(
 			allowNull: true,
 		},
 		rating: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.DOUBLE,
 			allowNull: false,
 			validate: {
 				min: 1,
