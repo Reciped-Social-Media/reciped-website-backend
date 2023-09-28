@@ -28,7 +28,7 @@ const UserRecipe = sequelize.define(
 			allowNull: false,
 		},
 		category: {
-			type: DataTypes.ENUM(["Breakfast", "Lunch", "Dinner", "All"]),
+			type: DataTypes.ENUM(["Breakfast", "Lunch", "Dinner", "All", "Dessert"]),
 			allowNull: false,
 		},
 	},
