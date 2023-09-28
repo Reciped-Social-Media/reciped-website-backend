@@ -58,25 +58,23 @@ async function findRecipeById(recipeId) {
 
 router.get("/", async (req, res) => {
 	const { queryString, recipeId } = req.query;
+	console.log("HERE", queryString, recipeId);
 
-	if (!queryString || typeof queryString !== "string") {
-		res.send({ error: "Invalid format" });
+	if (queryString && typeof queryString === "string") {
+		const queryResult = await findRecipesFromQueryString(queryString);
+		res.send(queryResult);
 		return;
 	}
 
-	if (recipeId && typeof recipeId !== "number") {
-		res.send({ error: "Invalid format" });
+	if (recipeId && typeof recipeId === "string") {
+		console.log("Here2");
+		const idResult = await findRecipeById(recipeId);
+		res.send(idResult);
 		return;
 	}
 
-	const [queryResults, idResult] = await Promise.all([
-		findRecipesFromQueryString(queryString),
-		recipeId ? findRecipeById(recipeId) : null,
-	]);
-
-	const recipes = idResult && queryResults.every(p => p.id !== idResult.id) ? [...queryResults, idResult] : queryResults;
-
-	res.send(recipes);
+	console.log("Here3");
+	res.send({ error: "Invalid query format" });
 });
 
 router.use("/create", create);
