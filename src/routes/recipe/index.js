@@ -1,45 +1,18 @@
 import express from "express";
-import { Recipe, RecipeIngredient } from "../../database/index.js";
+import { Recipe } from "../../database/index.js";
 import { Op } from "sequelize";
 import create from "./create.js";
+import { authenticateToken } from "../../middleware/authenticateToken.js";
 
 const router = express.Router();
 
 async function findRecipesFromQueryString(queryString) {
-	const [recipeResults, ingredientResults] = await Promise.all([
-		Recipe.findAll({
-			where: { title: { [Op.iLike]: queryString } },
-			limit: 20,
-		}),
-		RecipeIngredient.findAll({
-			attributes: [],
-			where: { ingredientName: { [Op.iLike]: queryString } },
-			limit: 20,
-			include: {
-				model: Recipe,
-				attributes: ["id", "title", "ingredients", "directions", "NER"],
-			},
-		}),
-	]);
-
-	const recipesRaw = [...recipeResults, ...ingredientResults.map((r) => r.Recipe)];
-	const uniqueRecipeIds = new Set();
-	const uniqueRecipes = [];
-
-	for (const recipe of recipesRaw) {
-		if (!uniqueRecipeIds.has(recipe.id)) {
-			uniqueRecipeIds.add(recipe.id);
-			uniqueRecipes.push({
-				id: recipe.id,
-				title: recipe.title,
-				ingredients: recipe.ingredients,
-				directions: recipe.directions,
-				NER: recipe.NER,
-			});
-		}
-	}
-
-	return uniqueRecipes;
+	const recipeResults = await Recipe.findAll({
+		where: { title: { [Op.iLike]: `%${queryString}%` } },
+		limit: 50,
+	});
+	const recipes = recipeResults.map(rec => rec.dataValues);
+	return recipes;
 }
 
 async function findRecipeById(recipeId) {
@@ -56,7 +29,7 @@ async function findRecipeById(recipeId) {
 	return { id, title, ingredients, directions, NER };
 }
 
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, async (req, res) => {
 	const { queryString, recipeId } = req.query;
 	console.log("HERE", queryString, recipeId);
 
@@ -67,13 +40,11 @@ router.get("/", async (req, res) => {
 	}
 
 	if (recipeId && typeof recipeId === "string") {
-		console.log("Here2");
 		const idResult = await findRecipeById(recipeId);
 		res.send(idResult);
 		return;
 	}
 
-	console.log("Here3");
 	res.send({ error: "Invalid query format" });
 });
 
