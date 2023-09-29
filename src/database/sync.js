@@ -14,20 +14,20 @@ import {
 	UserShopList,
 } from "./associations.js";
 
-async function sync() {
-	await User.sync();
-	await Recipe.sync();
-	await Ingredient.sync();
-	await RecipeIngredient.sync();
-	await UserRecipe.sync();
-	await UserIngredient.sync();
-	await Post.sync();
-	await PostLike.sync();
-	await PostReview.sync();
-	await Session.sync();
-	await SessionRefreshToken.sync();
-	await UserMealPlan.sync();
-	await UserShopList.sync();
+async function sync(alter = false) {
+	await User.sync({ alter });
+	await Recipe.sync({ alter });
+	await Ingredient.sync({ alter });
+	await RecipeIngredient.sync({ alter });
+	await UserRecipe.sync({ alter });
+	await UserIngredient.sync({ alter });
+	await Post.sync({ alter });
+	await PostLike.sync({ alter });
+	await PostReview.sync({ alter });
+	await Session.sync({ alter });
+	await SessionRefreshToken.sync({ alter });
+	await UserMealPlan.sync({ alter });
+	await UserShopList.sync({ alter });
 }
 
-sync({ alter: true });
+sync(true);
