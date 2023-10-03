@@ -11,7 +11,7 @@ router.post("/", authenticateToken, async (req, res) => {
 	if (
 		!recipeId || typeof recipeId !== "number"
 	) {
-		res.status(400).send({ error: "Invalid format" });
+		res.send({ error: "Invalid format" });
 		return;
 	}
 
@@ -21,7 +21,7 @@ router.post("/", authenticateToken, async (req, res) => {
 	const recipeCreation = await UserRecipe.findOrCreate({ where: { userId, recipeId }, defaults: { category, isPublic } })
 		.catch(err => {
 			console.log(err);
-			res.status(500).send({ error: "Something went wrong!" });
+			res.send({ error: "Something went wrong!" });
 		});
 	if (!recipeCreation) return;
 
@@ -30,7 +30,7 @@ router.post("/", authenticateToken, async (req, res) => {
 	const updatedRecipe = await recipe.update({ category, isPublic })
 		.catch(err => {
 			console.log(err);
-			res.status(500).send({ error: "Something went wrong!" });
+			res.send({ error: "Something went wrong!" });
 		});
 	if (!updatedRecipe) return;
 

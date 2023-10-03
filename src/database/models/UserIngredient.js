@@ -24,6 +24,18 @@ const UserIngredient = sequelize.define(
 			},
 			primaryKey: true,
 		},
+		storage: {
+			type: DataTypes.ENUM(["Fridge", "Freezer", "Pantry"]),
+			allowNull: false,
+		},
+		unit: {
+			type: DataTypes.ENUM(["pc", "g", "ml"]),
+			allowNull: false,
+		},
+		amount: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+		},
 	},
 	{
 		tableName: "UserIngredients",
