@@ -15,7 +15,6 @@ router.get("/", authenticateToken, async (req, res) => {
 
 	const ingredients = await Ingredient.findAll({
 		where: { name: { [Op.iLike]: `%${name}%` } },
-		limit: 1000,
 	});
 
 	const sendIngredients = ingredients.map(ing => ing.dataValues);
