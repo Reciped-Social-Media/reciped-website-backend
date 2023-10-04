@@ -15,9 +15,11 @@ router.get("/", authenticateToken, async (req, res) => {
 
 	const ingredients = await Ingredient.findAll({
 		where: { name: { [Op.iLike]: `%${name}%` } },
+		limit: 1000,
 	});
 
 	const sendIngredients = ingredients.map(ing => ing.dataValues);
+	console.log(sendIngredients);
 
 	let exactIngredient = null;
 
@@ -27,6 +29,11 @@ router.get("/", authenticateToken, async (req, res) => {
 
 	if (exactIngredient) {
 		res.send([exactIngredient]);
+		return;
+	}
+
+	if (sendIngredients.length < 1) {
+		res.send("Oops...can't find that");
 		return;
 	}
 
