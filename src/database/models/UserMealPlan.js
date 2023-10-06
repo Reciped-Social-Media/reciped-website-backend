@@ -19,7 +19,7 @@ const UserMealPlan = sequelize.define(
 			allowNull: false,
 		},
 		time: {
-			type: DataTypes.TEXT,
+			type: DataTypes.ENUM(["Breakfast", "Lunch", "Dinner", "Dessert"]),
 			allowNull: false,
 		},
 		recipeId: {
@@ -29,6 +29,9 @@ const UserMealPlan = sequelize.define(
 				model: Recipe,
 				key: "id",
 			},
+		},
+		source: {
+			type: DataTypes.ENUM(["Cookbook", "Recommend"]),
 		},
 	},
 	{

@@ -5,6 +5,7 @@ import interaction from "./interaction/index.js";
 import explore from "./explore/index.js";
 import recipe from "./recipe/index.js";
 import pantry from "./pantry/index.js";
+import mealplan from "./mealplan/index.js";
 
 const router = express.Router();
 
@@ -14,5 +15,6 @@ router.use("/interaction", interaction);
 router.use("/explore", explore);
 router.use("/recipe", recipe);
 router.use("/pantry", pantry);
+router.use("/mealplan", mealplan);
 
 export default router;
