@@ -11,7 +11,7 @@ router.post("/", authenticateToken, async (req, res) => {
 	if (
 		!postId || typeof postId !== "number"
 	) {
-		res.send({ error: "Invalid format" });
+		res.status(400).send({ error: "Invalid format" });
 		return;
 	}
 
@@ -20,7 +20,7 @@ router.post("/", authenticateToken, async (req, res) => {
 	const review = await PostReview.create({ userId, postId, rating, comment })
 		.catch(err => {
 			console.log(err);
-			res.send({ error: "Something went wrong!" });
+			res.status(500).send({ error: "Something went wrong!" });
 		});
 	if (!review) return;
 
@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
 	const reviews = await PostReview.findAll({ where: { postId: postId }, include: [{ model: User }] })
 		.catch(err => {
 			console.log(err);
-			res.send({ error: "Something went wrong!" });
+			res.status(500).send({ error: "Something went wrong!" });
 		});
 	if (!reviews) return;
 

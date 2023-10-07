@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateToken } from "../../middleware/authenticateToken.js";
+import { authenticateToken } from "../../middleware/index.js";
 import { Ingredient } from "../../database/index.js";
 import { Op } from "sequelize";
 
@@ -9,7 +9,7 @@ router.get("/", authenticateToken, async (req, res) => {
 	const { name } = req.query;
 
 	if (!name) {
-		res.send({ error: "Invalid query" });
+		res.status(400).send({ error: "Invalid format" });
 		return;
 	}
 
@@ -32,7 +32,7 @@ router.get("/", authenticateToken, async (req, res) => {
 	}
 
 	if (sendIngredients.length < 1) {
-		res.send("Oops...can't find that");
+		res.status(404).send("Oops...can't find that");
 		return;
 	}
 

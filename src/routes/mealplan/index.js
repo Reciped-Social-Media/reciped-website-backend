@@ -1,10 +1,10 @@
 import express from "express";
-import { authenticateToken } from "../../middleware/authenticateToken.js";
+import { authenticateToken } from "../../middleware/index.js";
 import {
 	UserMealPlan,
 	Recipe,
 	UserRecipe,
-} from "../../database/associations.js";
+} from "../../database/index.js";
 
 import add from "./add.js";
 import remove from "./remove.js";
