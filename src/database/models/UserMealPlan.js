@@ -32,6 +32,7 @@ const UserMealPlan = sequelize.define(
 		},
 		source: {
 			type: DataTypes.ENUM(["Cookbook", "Recommend"]),
+			allowNull: false,
 		},
 	},
 	{
