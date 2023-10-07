@@ -1,21 +1,33 @@
 import express from "express";
-import { authenticateToken } from "../../middleware/authenticateToken.js";
+import { authenticateToken } from "../../middleware/index.js";
 import { UserMealPlan } from "../../database/index.js";
-import dayjs from "dayjs";
 
 const router = express.Router();
 
 router.post("/", authenticateToken, async (req, res) => {
-	const { userId, recipeId, date } = req.body;
-	const newDate = dayjs(date);
+	const { userId, mealPlanId } = req.body;
 
-	const removedMeal = await UserMealPlan.destroy({ where: { userId, recipeId, date: newDate } })
+	if (!mealPlanId || typeof mealPlanId !== "number") {
+		res.status(400).send({ error: "Invalid format" });
+		return;
+	}
+
+	const mealPlan = await UserMealPlan.findOne({ where: { userId, id: mealPlanId } })
 		.catch(err => {
-			console.error(err);
-			res.send({ error: "Something went wrong!" });
+			console.log(err);
+			res.status(500).send({ error: "Something went wrong!" });
 		});
-	if (!removedMeal) return;
-	res.sendStatus(200);
+	if (!mealPlan) {
+		res.status(404).send({ error: "Meal plan not found!" });
+		return;
+	}
+
+	mealPlan.destroy().then(() => {
+		res.sendStatus(200);
+	}).catch(err => {
+		console.log(err);
+		res.status(500).send({ error: "Something went wrong!" });
+	});
 });
 
 export default router;
