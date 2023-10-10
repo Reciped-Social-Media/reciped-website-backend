@@ -52,14 +52,14 @@ router.get("/", async (req, res) => {
 	if (!post) return;
 
 	res.status(200).send({
-		postId: post.postId,
-		userId: post.userId,
-		recipeId: post.recipeId,
-		caption: post.caption,
-		category: post.category,
-		likes: post.postLikes.length,
-		reviews: post.postReviews.length,
-		rating: post.postReviews.length > 0 ? post.postReviews.reduce((acc, cur) => acc + cur.rating, 0) / post.postReviews.length : 0,
+		postId: post.dataValues.postId,
+		userId: post.dataValues.userId,
+		recipeId: post.dataValues.recipeId,
+		caption: post.dataValues.caption,
+		category: post.dataValues.category,
+		likes: post.dataValues.postLikes.length,
+		reviews: post.dataValues.postReviews.length,
+		rating: post.dataValues.postReviews.length > 0 ? post.dataValues.postReviews.reduce((acc, cur) => acc + cur.rating, 0) / post.dataValues.postReviews.length : 0,
 	});
 });
 
