@@ -1,11 +1,12 @@
 import express from "express";
 import { Op, col, fn, where } from "sequelize";
 import { Ingredient, Recipe } from "../../database/index.js";
+import { authenticateToken } from "../../middleware";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
-	const { userId, title, ingredients, directions } = req.body;
+router.post("/", authenticateToken, async (req, res) => {
+	const { title, ingredients, directions } = req.body;
 
 	if (
 		!title || typeof title !== "string" ||

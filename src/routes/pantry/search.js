@@ -8,36 +8,30 @@ const router = express.Router();
 router.get("/", authenticateToken, async (req, res) => {
 	const { name } = req.query;
 
-	if (!name) {
+	if (!name || typeof name !== "string") {
 		res.status(400).send({ error: "Invalid format" });
 		return;
 	}
 
-	const ingredients = await Ingredient.findAll({
-		where: { name: { [Op.iLike]: `%${name}%` } },
+	const ingredientsModels = await Ingredient.findAll({
+		where: { name: { [Op.iLike]: name } },
+	}).catch((err) => {
+		console.log(err);
+		res.status(500).send({ error: "Something went wrong" });
+		return;
 	});
+	if (!ingredientsModels) return;
 
-	const sendIngredients = ingredients.map(ing => ing.dataValues);
-	console.log(sendIngredients);
+	const ingredients = ingredientsModels.map(ing => ing.dataValues.name);
 
-	let exactIngredient = null;
-
-	sendIngredients.map(ingredient => {
-		if (ingredient.name === name) exactIngredient = ingredient;
-	});
-
-	if (exactIngredient) {
-		res.send([exactIngredient]);
+	if (ingredients.includes(name)) {
+		res.send({ ingredients: [name] });
 		return;
 	}
-
-	if (sendIngredients.length < 1) {
-		res.status(404).send("Oops...can't find that");
+	else {
+		res.send({ ingredients });
 		return;
 	}
-
-	res.send(sendIngredients);
-	return;
 });
 
 export default router;
