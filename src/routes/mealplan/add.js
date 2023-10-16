@@ -6,13 +6,12 @@ const router = express.Router();
 
 router.post("/", authenticateToken, async (req, res) => {
 	const { userId, recipeId, dateEpochMs, time, source } = req.body;
-	console.log(req.body);
 
 	if (
 		!recipeId || typeof recipeId !== "number" ||
-		!date || typeof date !== "number" ||
-		!time || ["Breakfast", "Lunch", "Dinner", "Dessert"].includes(time) ||
-		!source || ["Cookbook", "Planner"].includes(source)
+		!dateEpochMs || typeof dateEpochMs !== "number" ||
+		!time || !["Breakfast", "Lunch", "Dinner", "Dessert"].includes(time) ||
+		!source || !["Cookbook", "Planner"].includes(source)
 	) {
 		res.status(400).send({ error: "Invalid format" });
 		return;
