@@ -1,4 +1,5 @@
 import express from "express";
+import exists from "./exists.js";
 import add from "./add.js";
 import remove from "./remove.js";
 import togglePublic from "./toggle-public.js";
@@ -19,14 +20,15 @@ router.get("/", authenticateToken, async (req, res) => {
 
 	const recipes = userRecipes.map((userRecipe) => {
 		const { recipeId, category, isPublic } = userRecipe;
-		const { title, ingredients, directions } = userRecipe.Recipe;
+		const { title, ingredients, directions } = userRecipe.dataValues.Recipe;
 
-		return { recipeId, title, ingredients, directions, category, isPublic };
+		return { id: recipeId, title, ingredients, directions, category, isPublic };
 	});
 
 	res.send(recipes.sort((a, b) => a.recipeId - b.recipeId));
 });
 
+router.use("/exists", exists);
 router.use("/add", add);
 router.use("/remove", remove);
 router.use("/toggle-public", togglePublic);
