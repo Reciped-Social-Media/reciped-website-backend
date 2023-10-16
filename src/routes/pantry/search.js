@@ -22,16 +22,14 @@ router.get("/", authenticateToken, async (req, res) => {
 	});
 	if (!ingredientsModels) return;
 
-	const ingredients = ingredientsModels.map(ing => ing.dataValues.name);
+	const ingredients = ingredientsModels.map(ing => { return { name: ing.dataValues.name, id: ing.dataValues.id }; });
 
-	if (ingredients.includes(name)) {
-		res.send({ ingredients: [name] });
+	const exactMatch = ingredients.find(ing => ing.name.toLowerCase() === name.toLowerCase());
+	if (exactMatch) {
+		res.send([exactMatch]);
 		return;
 	}
-	else {
-		res.send({ ingredients });
-		return;
-	}
+	res.send(ingredients);
 });
 
 export default router;
