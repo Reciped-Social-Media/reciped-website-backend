@@ -19,7 +19,11 @@ router.post("/", authenticateToken, async (req, res) => {
 			console.log(err);
 			res.status(500).send({ error: "Something went wrong!" });
 		});
-	if (!recipe) return;
+	if (!recipe && recipe !== null) return;
+	if (!recipe) {
+		res.status(404).send({ error: "Recipe not found in user's cookbook" });
+		return;
+	}
 
 	const updatedRecipe = await recipe.update({ isPublic: !recipe.isPublic })
 		.catch(err => {
