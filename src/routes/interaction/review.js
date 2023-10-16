@@ -46,14 +46,14 @@ router.get("/", async (req, res) => {
 
 	const returnData = reviews.map(review => {
 		return {
-			id: review.user.id,
-			username: review.user.username,
+			id: review.User.id,
+			username: review.User.username,
 			rating: review.rating,
 			comment: review.comment,
 		};
 	});
 
-	res.status(200).send({ reviews: returnData });
+	res.status(200).send(returnData);
 });
 
 export default router;

@@ -1,11 +1,12 @@
 import express from "express";
 import { Op, col, fn, where } from "sequelize";
-import { Ingredient, Recipe } from "../../database/index.js";
-import { authenticateToken } from "../../middleware";
+import { Ingredient, Recipe, UserRecipe } from "../../database/index.js";
+import { authenticateToken } from "../../middleware/index.js";
 
 const router = express.Router();
 
 router.post("/", authenticateToken, async (req, res) => {
+	const { userId } = req.body;
 	const { title, ingredients, directions } = req.body;
 
 	if (
@@ -46,6 +47,15 @@ router.post("/", authenticateToken, async (req, res) => {
 		return;
 	});
 	if (!recipe) return;
+
+	const recipeCreation = await UserRecipe.create({ userId, recipeId: recipe.dataValues.id, category: "All", isPublic: false })
+		.catch((err) => {
+			console.log(err);
+			res.status(500).send({ error: "Something went wrong!" });
+			return;
+		});
+	if (!recipeCreation) return;
+
 	res.status(200).send({ recipeId: recipe.dataValues.id });
 });
 

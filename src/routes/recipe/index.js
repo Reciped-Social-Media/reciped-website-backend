@@ -31,7 +31,6 @@ async function findRecipeById(recipeId) {
 
 router.get("/", authenticateToken, async (req, res) => {
 	const { queryString, recipeId } = req.query;
-	console.log("HERE", queryString, recipeId);
 
 	if (queryString && typeof queryString === "string") {
 		const queryResult = await findRecipesFromQueryString(queryString);
