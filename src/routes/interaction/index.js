@@ -1,5 +1,6 @@
 import express from "express";
 import like from "./like.js";
+import unlike from "./unlike.js";
 import post from "./post.js";
 import review from "./review.js";
 import { authenticateToken } from "../../middleware/authenticateToken.js";
@@ -34,6 +35,7 @@ router.get("/", authenticateToken, async (req, res) => {
 });
 
 router.use("/like", like);
+router.use("/unlike", unlike);
 router.use("/post", post);
 router.use("/review", review);
 
