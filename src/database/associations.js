@@ -12,6 +12,7 @@ import {
 	UserMealPlan,
 	UserRecipe,
 	UserShopList,
+	Embedding,
 } from "./models/index.js";
 
 // Recipe associations
@@ -209,5 +210,6 @@ export {
 	UserMealPlan,
 	UserRecipe,
 	UserShopList,
+	Embedding,
 };
 

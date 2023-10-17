@@ -12,6 +12,7 @@ import {
 	SessionRefreshToken,
 	UserMealPlan,
 	UserShopList,
+	Embedding,
 } from "./associations.js";
 
 async function sync(alter = false) {
@@ -28,6 +29,7 @@ async function sync(alter = false) {
 	await SessionRefreshToken.sync({ alter });
 	await UserMealPlan.sync({ alter });
 	await UserShopList.sync({ alter });
+	await Embedding.sync({ alter });
 }
 
 sync(true);

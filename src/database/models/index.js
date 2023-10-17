@@ -11,3 +11,4 @@ export * from "./UserMealPlan.js";
 export * from "./UserIngredient.js";
 export * from "./UserRecipe.js";
 export * from "./UserShopList.js";
+export * from "./Embedding.js";
