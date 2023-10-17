@@ -1,7 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { Session, SessionRefreshToken, User } from "../../database/index.js";
-import { generateJwt } from "../../utils";
+import { generateJwt } from "../../utils/index.js";
 
 const router = express.Router();
 
