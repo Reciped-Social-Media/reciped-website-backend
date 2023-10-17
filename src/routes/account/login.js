@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
 		return;
 	}
 
-	const { accessToken, refreshToken } = await generateJwt(user.id);
+	const { accessToken, refreshToken } = generateJwt(user.id);
 	const ONE_HOUR = 60 * 60 * 1000;
 	const session = await Session.create({ userId: user.id, expiresAt: Date.now() + ONE_HOUR })
 		.catch(err => {
