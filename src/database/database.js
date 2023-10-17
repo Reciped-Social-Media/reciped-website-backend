@@ -14,6 +14,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, pr
 			ca: caCertificate,
 		},
 	},
+	logging: false,
 });
 
 const testDbConnection = async () => {

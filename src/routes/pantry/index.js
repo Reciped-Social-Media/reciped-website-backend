@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateToken } from "../../middleware/authenticateToken.js";
+import { authenticateToken } from "../../middleware/index.js";
 import { Ingredient, UserIngredient } from "../../database/index.js";
 import add from "./add.js";
 import search from "./search.js";
@@ -11,13 +11,13 @@ router.get("/", authenticateToken, async (req, res) => {
 	const { userId } = req.body;
 
 	if (!userId) {
-		res.send({ error: "Invalid Id" });
+		res.status(400).send({ error: "Invalid format" });
 		return;
 	}
 
 	const ingredients = await UserIngredient.findAll({ where: { userId }, include: [{ model: Ingredient }] });
 	if (!ingredients) {
-		res.send({ error: "Something went wrong" });
+		res.status(500).send({ error: "Something went wrong" });
 	}
 	const userIngredients = ingredients.map(ing => ({
 		storage : ing.dataValues.storage,

@@ -1,15 +1,14 @@
 import express from "express";
-import { authenticateToken } from "../../middleware/authenticateToken.js";
+import { authenticateToken } from "../../middleware/index.js";
 import { UserIngredient } from "../../database/index.js";
 
 const router = express.Router();
 
-router.get("/", authenticateToken, async (req, res) => {
-	const userId = req.body.userId;
-	const { ingredientId } = req.query;
+router.post("/", authenticateToken, async (req, res) => {
+	const { userId, ingredientId } = req.body;
 
-	if (!ingredientId) {
-		res.send({ error: "Invalid query" });
+	if (!ingredientId || typeof ingredientId !== "number") {
+		res.status(400).send({ error: "Invalid format" });
 		return;
 	}
 

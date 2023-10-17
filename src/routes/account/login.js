@@ -9,19 +9,19 @@ router.post("/", async (req, res) => {
 	const { username, password } = req.body;
 
 	if (!username || !password || typeof username !== "string" || typeof password !== "string") {
-		res.send({ error: "Invalid format" });
+		res.status(400).send({ error: "Invalid format" });
 		return;
 	}
 
 	const user = await User.findOne({ where: { username } });
 	if (!user) {
-		res.send({ error: "Account not found!" });
+		res.status(404).send({ error: "Account not found!" });
 		return;
 	}
 
 	const validPassword = bcrypt.compareSync(password, user.passwordHash);
 	if (!validPassword) {
-		res.send({ error: "Invalid credentials!" });
+		res.status(403).send({ error: "Invalid credentials!" });
 		return;
 	}
 

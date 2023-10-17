@@ -1,25 +1,29 @@
 import express from "express";
-import { authenticateToken } from "../../middleware/authenticateToken.js";
+import { authenticateToken } from "../../middleware/index.js";
 import { UserIngredient } from "../../database/index.js";
 
 const router = express.Router();
 
 router.post("/", authenticateToken, async (req, res) => {
-	const userId = req.body.userId;
-	const { ingredientId, storage, unit, amount } = req.body;
+	const { userId, ingredientId, storage, unit, amount } = req.body;
 
-	if (!ingredientId || !storage || !unit || !amount) {
-		res.send({ error: "Invalid request" });
+	if (
+		!ingredientId || typeof ingredientId !== "number" ||
+		!storage || typeof storage !== "string" ||
+		!unit || typeof unit !== "string" ||
+		!amount || typeof amount !== "number"
+	) {
+		res.status(400).send("Invalid format");
 		return;
 	}
 
-	const addedIngredient = await UserIngredient.findOrCreate({ where: { userId, ingredientId, storage, unit, amount } })
-		.catch(err => {
-			console.error(err);
-			res.send({ error: "Something went wrong!" });
+	const ingredient = await UserIngredient.findOrCreate({ userId, ingredientId, storage, unit, amount })
+		.catch((err) => {
+			console.log(err);
+			res.status(500).send("Something went wrong!");
+			return;
 		});
-
-	if (!addedIngredient) return;
+	if (!ingredient) return;
 	res.sendStatus(200);
 });
 

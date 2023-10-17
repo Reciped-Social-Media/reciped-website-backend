@@ -1,6 +1,6 @@
 import express from "express";
 import { authenticateToken } from "../../middleware/index.js";
-import { Post, PostLike, PostReview } from "../../database/index.js";
+import { Post, PostLike, PostReview, Recipe, User } from "../../database/index.js";
 
 const router = express.Router();
 
@@ -30,7 +30,8 @@ router.post("/", authenticateToken, async (req, res) => {
 	res.status(200).send({ postId: post.dataValues.id });
 });
 
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, async (req, res) => {
+	const { userId } = req.body;
 	const { postId } = req.query;
 
 	if (
@@ -40,7 +41,7 @@ router.get("/", async (req, res) => {
 		return;
 	}
 
-	const post = await Post.findOne({ where: { postId }, include: [{ model: PostLike }, { model: PostReview }] })
+	const post = await Post.findOne({ where: { id: postId }, include: [{ model: Recipe }, { model: User }, { model: PostLike }, { model: PostReview }] })
 		.catch(err => {
 			console.log(err);
 			res.status(500).send({ error: "Something went wrong!" });
@@ -52,14 +53,23 @@ router.get("/", async (req, res) => {
 	if (!post) return;
 
 	res.status(200).send({
-		postId: post.postId,
-		userId: post.userId,
-		recipeId: post.recipeId,
-		caption: post.caption,
-		category: post.category,
-		likes: post.postLikes.length,
-		reviews: post.postReviews.length,
-		rating: post.postReviews.length > 0 ? post.postReviews.reduce((acc, cur) => acc + cur.rating, 0) / post.postReviews.length : 0,
+		id: post.dataValues.id,
+		user: {
+			id: post.dataValues.User.dataValues.id,
+			username: post.dataValues.User.dataValues.username,
+		},
+		recipe: {
+			id: post.dataValues.Recipe.dataValues.id,
+			title: post.dataValues.Recipe.dataValues.title,
+			ingredients: post.dataValues.Recipe.dataValues.ingredients,
+			directions: post.dataValues.Recipe.dataValues.directions,
+		},
+		caption: post.dataValues.caption,
+		category: post.dataValues.category,
+		likes: post.dataValues.PostLikes.length,
+		liked: post.dataValues.PostLikes.map(like => like.dataValues.userId).includes(Number(userId)),
+		reviews: post.dataValues.PostReviews.length,
+		rating: post.dataValues.PostReviews.length > 0 ? Math.round(post.dataValues.PostReviews.reduce((acc, cur) => acc + cur.dataValues.rating * 2, 0) / post.dataValues.PostReviews.length) / 2 : 0,
 	});
 });
 

@@ -4,11 +4,12 @@ import { UserRecipe } from "../../database/index.js";
 
 const router = express.Router();
 
-router.post("/", authenticateToken, async (req, res) => {
-	const { userId, recipeId } = req.body;
+router.get("/", authenticateToken, async (req, res) => {
+	const { recipeId } = req.query;
+	const { userId } = req.body;
 
 	if (
-		!recipeId || typeof recipeId !== "number"
+		!recipeId || isNaN(Number(recipeId))
 	) {
 		res.status(400).send({ error: "Invalid format" });
 		return;
@@ -20,19 +21,7 @@ router.post("/", authenticateToken, async (req, res) => {
 			res.status(500).send({ error: "Something went wrong!" });
 		});
 	if (!recipe && recipe !== null) return;
-	if (!recipe) {
-		res.status(404).send({ error: "Recipe not found in user's cookbook" });
-		return;
-	}
-
-	const updatedRecipe = await recipe.update({ isPublic: !recipe.isPublic })
-		.catch(err => {
-			console.log(err);
-			res.status(500).send({ error: "Something went wrong!" });
-		});
-	if (!updatedRecipe) return;
-
-	res.sendStatus(200);
+	res.send(!!recipe);
 });
 
 export default router;

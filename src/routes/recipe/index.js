@@ -2,7 +2,7 @@ import express from "express";
 import { Recipe } from "../../database/index.js";
 import { Op } from "sequelize";
 import create from "./create.js";
-import { authenticateToken } from "../../middleware/authenticateToken.js";
+import { authenticateToken } from "../../middleware/index.js";
 
 const router = express.Router();
 
@@ -31,7 +31,6 @@ async function findRecipeById(recipeId) {
 
 router.get("/", authenticateToken, async (req, res) => {
 	const { queryString, recipeId } = req.query;
-	console.log("HERE", queryString, recipeId);
 
 	if (queryString && typeof queryString === "string") {
 		const queryResult = await findRecipesFromQueryString(queryString);
@@ -45,7 +44,7 @@ router.get("/", authenticateToken, async (req, res) => {
 		return;
 	}
 
-	res.send({ error: "Invalid query format" });
+	res.status(400).send({ error: "Invalid format" });
 });
 
 router.use("/create", create);

@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateToken } from "../../middleware/authenticateToken.js";
+import { authenticateToken } from "../../middleware/index.js";
 import { Ingredient } from "../../database/index.js";
 import { Op } from "sequelize";
 
@@ -8,36 +8,28 @@ const router = express.Router();
 router.get("/", authenticateToken, async (req, res) => {
 	const { name } = req.query;
 
-	if (!name) {
-		res.send({ error: "Invalid query" });
+	if (!name || typeof name !== "string") {
+		res.status(400).send({ error: "Invalid format" });
 		return;
 	}
 
-	const ingredients = await Ingredient.findAll({
-		where: { name: { [Op.iLike]: `%${name}%` } },
+	const ingredientsModels = await Ingredient.findAll({
+		where: { name: { [Op.iLike]: name } },
+	}).catch((err) => {
+		console.log(err);
+		res.status(500).send({ error: "Something went wrong" });
+		return;
 	});
+	if (!ingredientsModels) return;
 
-	const sendIngredients = ingredients.map(ing => ing.dataValues);
-	console.log(sendIngredients);
+	const ingredients = ingredientsModels.map(ing => { return { name: ing.dataValues.name, id: ing.dataValues.id }; });
 
-	let exactIngredient = null;
-
-	sendIngredients.map(ingredient => {
-		if (ingredient.name === name) exactIngredient = ingredient;
-	});
-
-	if (exactIngredient) {
-		res.send([exactIngredient]);
+	const exactMatch = ingredients.find(ing => ing.name.toLowerCase() === name.toLowerCase());
+	if (exactMatch) {
+		res.send([exactMatch]);
 		return;
 	}
-
-	if (sendIngredients.length < 1) {
-		res.send("Oops...can't find that");
-		return;
-	}
-
-	res.send(sendIngredients);
-	return;
+	res.send(ingredients);
 });
 
 export default router;
