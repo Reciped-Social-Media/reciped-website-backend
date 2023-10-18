@@ -21,11 +21,11 @@ router.post("/", authenticateToken, async (req, res) => {
 		},
 		body: JSON.stringify({
 			chef: true,
-			input: ingredients,
+			input: [ingredients],
 		}),
 	})
 		.then(response => response.json())
-		.then(json => recommendedIds = json)
+		.then(json => recommendedIds = json.recommendations)
 		.catch(() => recommendedIds = undefined);
 
 	if (!recommendedIds) {
