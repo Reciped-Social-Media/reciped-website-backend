@@ -9,15 +9,15 @@ const Recipe = sequelize.define(
 			allowNull: false,
 		},
 		ingredients: {
-			type: DataTypes.ARRAY(DataTypes.TEXT),
+			type: DataTypes.TEXT,
 			allowNull: false,
 		},
 		directions: {
-			type: DataTypes.ARRAY(DataTypes.TEXT),
+			type: DataTypes.TEXT,
 			allowNull: false,
 		},
 		NER: {
-			type: DataTypes.ARRAY(DataTypes.TEXT),
+			type: DataTypes.TEXT,
 			allowNull: false,
 		},
 	},
