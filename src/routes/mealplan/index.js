@@ -1,5 +1,5 @@
 import express from "express";
-import axios from "axios";
+// import axios from "axios";
 import { authenticateToken } from "../../middleware/index.js";
 import {
 	UserMealPlan,
@@ -58,10 +58,10 @@ router.get("/", authenticateToken, async (req, res) => {
 
 	console.log("CookbookIDs", userRecIds);
 
-	const data = {
-		input: userRecIds,
-		chef: false,
-	};
+	// const data = {
+	// 	input: userRecIds,
+	// 	chef: false,
+	// };
 
 	// const recommendations = await axios.post("http://0.0.0.0:105/recommend", data);
 	// const recommendedIds = recommendations.data.recommendations.map(rec => rec[1]);
