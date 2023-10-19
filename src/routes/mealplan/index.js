@@ -1,5 +1,5 @@
 import express from "express";
-// import axios from "axios";
+import axios from "axios";
 import { authenticateToken } from "../../middleware/index.js";
 import {
 	UserMealPlan,
@@ -58,31 +58,31 @@ router.get("/", authenticateToken, async (req, res) => {
 
 	console.log("CookbookIDs", userRecIds);
 
-	// const data = {
-	// 	input: userRecIds,
-	// 	chef: false,
-	// };
+	const data = {
+		input: userRecIds,
+		chef: false,
+	};
 
-	// const recommendations = await axios.post("http://0.0.0.0:105/recommend", data);
-	// const recommendedIds = recommendations.data.recommendations.map(rec => rec[1]);
-	// console.log(userRecIds);
-	// console.log(recommendedIds);
-	// const recommendedRecipes = [];
+	const recommendations = await axios.post("http://0.0.0.0:105/recommend", data);
+	const recommendedIds = recommendations.data.recommendations.map(rec => rec[1]);
+	console.log(userRecIds);
+	console.log(recommendedIds);
+	const recommendedRecipes = [];
 
-	// await Promise.all(recommendedIds.map(async (rec_id, index) => {
-	// 	const recRecipe = await Recipe.findOne({ where: { id: rec_id } });
-	// 	const { id, title, ingredients, directions } = recRecipe.dataValues;
-	// 	recommendedRecipes.push({
-	// 		recipeId: id,
-	// 		recommendedId: userRecIds[index],
-	// 		title,
-	// 		ingredients,
-	// 		directions,
-	// 	});
-	// }));
+	await Promise.all(recommendedIds.map(async (rec_id, index) => {
+		const recRecipe = await Recipe.findOne({ where: { id: rec_id } });
+		const { id, title, ingredients, directions } = recRecipe.dataValues;
+		recommendedRecipes.push({
+			recipeId: id,
+			recommendedId: userRecIds[index],
+			title,
+			ingredients,
+			directions,
+		});
+	}));
 
 
-	res.send({ cookbook: cookbookRecipes, planner: userRecipes, recommended: [] });
+	res.send({ cookbook: cookbookRecipes, planner: userRecipes, recommended: recommendedRecipes });
 });
 
 router.use("/add", add);

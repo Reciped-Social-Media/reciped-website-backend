@@ -1,8 +1,7 @@
 import express from "express";
 import { authenticateToken } from "../../middleware/index.js";
 import { Recipe } from "../../database/index.js";
-import fetch from "node-fetch";
-import { Op } from "sequelize";
+import axios from "axios";
 
 const router = express.Router();
 
@@ -13,39 +12,33 @@ router.post("/", authenticateToken, async (req, res) => {
 		return res.status(400).json({ error: "Invalid format" });
 	}
 
-	let recommendedIds;
-	fetch("http://localhost:105/recommend", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			chef: true,
-			input: [ingredients],
-		}),
-	})
-		.then(response => response.json())
-		.then(json => recommendedIds = json.recommendations)
-		.catch(() => recommendedIds = undefined);
+	const data = {
+		chef: true,
+		input: [ingredients],
+	};
+
+	const reco = await axios.post("http://0.0.0.0:105/recommend", data);
+	const recommendedIds = reco.data.recommendations[0];
 
 	if (!recommendedIds) {
 		return res.status(500).json({ error: "Something went wrong!" });
 	}
 
-	const recommendedRecipes = await Recipe.findAll({
+	let recommendedRecipes = await Recipe.findAll({
 		where: {
-			[Op.in]: recommendedIds,
+			id: recommendedIds,
 		},
 	});
 
-	res.send(recommendedRecipes.map(recipe => {
-		return {
-			id: recipe.id,
-			title: recipe.title,
-			ingredients: recipe.ingredients,
-			directions: recipe.directions,
-		};
+	recommendedRecipes = recommendedRecipes.map(rec => ({
+		id: rec.dataValues.id,
+		title: rec.dataValues.title,
+		ingredients: rec.dataValues.ingredients,
+		directions: rec.dataValues.directions,
+		NER: rec.dataValues.NER,
 	}));
+
+	res.send(recommendedRecipes);
 });
 
 export default router;
