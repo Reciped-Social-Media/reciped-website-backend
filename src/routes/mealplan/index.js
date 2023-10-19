@@ -56,7 +56,6 @@ router.get("/", authenticateToken, async (req, res) => {
 		};
 	});
 
-	console.log("CookbookIDs", userRecIds);
 
 	const data = {
 		input: userRecIds,
@@ -65,8 +64,6 @@ router.get("/", authenticateToken, async (req, res) => {
 
 	const recommendations = await axios.post("http://0.0.0.0:105/recommend", data);
 	const recommendedIds = recommendations.data.recommendations.map(rec => rec[1]);
-	console.log(userRecIds);
-	console.log(recommendedIds);
 	const recommendedRecipes = [];
 
 	await Promise.all(recommendedIds.map(async (rec_id, index) => {
